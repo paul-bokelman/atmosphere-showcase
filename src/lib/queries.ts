@@ -16,8 +16,6 @@ export const useGetBook = (slug: string) => {
       const res = await axios.get<Book>(`/api/books/${slug}`);
       return res.data;
     },
-    {
-      enabled: !!slug,
-    }
+    { enabled: !!slug }
   );
 };

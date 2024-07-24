@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { Logo } from "~/components/logo";
+import { Logo } from "~/components/icons";
 
 export type HeaderOptions = {
   view: "main" | "backtrack";

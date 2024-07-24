@@ -16,6 +16,19 @@ export type NextPageWithConfig<P = unknown, IP = P> = NextPage<P, IP> & {
   };
 };
 
+export type AmbientSection = {
+  start: number;
+  end: number;
+  description: string;
+};
+
+export type Chapter = {
+  title: string;
+  audio: string;
+  paragraphs: string[];
+  ambientSections: AmbientSection[];
+};
+
 export type Book = {
   slug: string;
   title: string;
@@ -23,10 +36,10 @@ export type Book = {
   cover: string;
   author: string;
   date: string;
-  chapters: number;
   length: number; // in minutes
   genre: string;
   accentColor: string;
+  chapters: Chapter[];
 };
 
 export type Books = Book[];

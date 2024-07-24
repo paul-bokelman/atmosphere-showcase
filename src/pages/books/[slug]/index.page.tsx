@@ -72,8 +72,8 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
           },
         },
         seo: {
-          title: "Atmosphere | Preview",
-          description: "The atmosphere library of immersive audio books",
+          title: `${book.title} | Preview`,
+          description: `Preview of ${book.title} by ${book.author}`,
         },
       },
     },

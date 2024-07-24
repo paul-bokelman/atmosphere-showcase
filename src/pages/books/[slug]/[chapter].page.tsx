@@ -2,7 +2,6 @@ import type { NextPage, GetStaticProps, GetStaticPaths } from "next";
 import type { Book, Chapter, PropsWithConfig } from "~/types";
 import React from "react";
 import { useRouter } from "next/router";
-import { useSearchParams } from "next/navigation";
 import { getBook, getAllBooks } from "~/lib/queries";
 import { AudioPlayer } from "~/partials/audio";
 
@@ -13,7 +12,10 @@ type Props = PropsWithConfig<{
     };
 }>;
 
-const ReadBook: NextPage<Props> = ({ data: { chapter, chapterNumber, totalChapters, title, author, accentColor } }) => {
+const ReadBook: NextPage<Props> = ({
+  data: { chapter, chapterNumber, totalChapters, title, author, accentColor },
+  config,
+}) => {
   const router = useRouter();
 
   const nextChapterDisabled = chapterNumber === totalChapters;
@@ -88,6 +90,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const slug = params?.slug as string;
+  const chapter = parseInt(params?.chapter as string);
   const query = await getBook(slug);
 
   if (query.status === "error") {
@@ -99,18 +102,20 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   return {
     props: {
       data: {
-        chapter: book.chapters[parseInt(params?.chapter as string) - 1],
-        chapterNumber: parseInt(params?.chapter as string),
+        chapter: book.chapters[chapter - 1],
+        chapterNumber: chapter,
         totalChapters: book.chapters.length,
         title: book.title,
         author: book.author,
         accentColor: book.accentColor,
       },
       config: {
-        layout: { header: { view: "backtrack" } },
+        layout: { header: { view: "backtrack", text: book.title } },
         seo: {
-          title: "Atmosphere | Book",
-          description: "The atmosphere library of immersive audio books",
+          title: `${book.title} - ${book.chapters[chapter - 1].title}`,
+          description: `Reading Chapter ${chapter} (${book.chapters[chapter - 1].title}) of ${book.title} by ${
+            book.author
+          }`,
         },
       },
     },

@@ -49,7 +49,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
             ],
           },
         },
-        seo: { title: "Atmosphere | Books", description: "The atmosphere library of immersive audio books." },
+        seo: { title: "Library", description: "The atmosphere library of immersive audio books." },
       },
     },
   };

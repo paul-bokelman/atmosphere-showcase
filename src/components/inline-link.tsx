@@ -1,14 +1,20 @@
-type Props = React.PropsWithChildren<React.AnchorHTMLAttributes<HTMLAnchorElement>>;
+import Link from "next/link";
 
-export const InlineLink: React.FC<Props> = ({ href, children }) => {
+type Props = React.PropsWithChildren<{ href: string; external?: boolean }>;
+
+export const InlineLink: React.FC<Props> = ({ href, external, children }) => {
+  const classes = "text-accent hover:brightness-110 underline transition-colors";
+  if (external) {
+    return (
+      <a href={href} className={classes} target="_blank" rel="noopener noreferrer">
+        {children}
+      </a>
+    );
+  }
+
   return (
-    <a
-      href={href}
-      className="text-accent hover:brightness-110 underline transition-colors"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <Link href={href} className={classes}>
       {children}
-    </a>
+    </Link>
   );
 };

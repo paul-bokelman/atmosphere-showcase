@@ -18,7 +18,7 @@ export type Props = React.PropsWithChildren<{
 
 export const Layout: React.FC<Props> = ({ seo, layout, children }) => {
   return (
-    <main className="relative flex w-screen h-screen justify-center">
+    <main className="relative flex w-screen h-screen justify-center font-secondary">
       <Head>
         <title>{seo.title}</title>
         <meta name="description" content={seo.description} />

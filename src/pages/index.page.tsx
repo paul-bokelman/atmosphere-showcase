@@ -1,12 +1,13 @@
-import type { NextPageWithConfig } from "~/types";
+import type { NextPage, GetStaticProps } from "next";
+import type { Books, PropsWithConfig } from "~/types";
 import React from "react";
 import { animate, motion, useMotionValue } from "framer-motion";
-import { FaGithub } from "react-icons/fa";
 import { Logo } from "~/components";
-import { useGetAllBooks } from "~/lib/queries";
+import { getAllBooks } from "~/lib/queries";
 
-const Landing: NextPageWithConfig = () => {
-  const { data: books, status } = useGetAllBooks();
+type Props = PropsWithConfig<{ books: Books }>;
+
+const Landing: NextPage<Props> = ({ books }) => {
   const [sliderTrackRef, setSliderTrackRef] = React.useState<HTMLDivElement | null>(null);
   let duration = 35;
   const xTranslation = useMotionValue(0);
@@ -37,45 +38,58 @@ const Landing: NextPageWithConfig = () => {
         <span className="text-primary font-semibold">brings your favorite narratives to life</span>.
       </p>
       <div className="relative w-full mt-20">
-        {status === "success" && (
-          <div className="relative w-[calc(100%+100px)] right-[50px] h-full overflow-scroll">
-            <div className="absolute z-10 w-full left-0 h-[218px] bg-gradient-to-r from-bg via-bg/0 to-bg" />
-            <motion.div ref={(ref) => setSliderTrackRef(ref)} className="w-full flex gap-4" style={{ x: xTranslation }}>
-              {[...books, ...books].map((book) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <motion.img key={book.slug} src={book.cover} alt={book.title} className="rounded-2xl h-[218px]" />
-              ))}
-            </motion.div>
-          </div>
-        )}
+        <div className="relative w-[calc(100%+100px)] right-[50px] h-full overflow-scroll">
+          <div className="absolute z-10 w-full left-0 h-[218px] bg-gradient-to-r from-bg via-bg/0 to-bg" />
+          <motion.div ref={(ref) => setSliderTrackRef(ref)} className="w-full flex gap-4" style={{ x: xTranslation }}>
+            {[...books, ...books].map((book) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <motion.img key={book.slug} src={book.cover} alt={book.title} className="rounded-2xl h-[218px]" />
+            ))}
+          </motion.div>
+        </div>
       </div>
     </div>
   );
 };
 
-Landing.config = {
-  layout: {
-    nav: {
-      items: [
-        {
-          span: 1,
-          variant: "secondary",
-          link: { external: true, href: "https://github.com/paul-bokelman/atmosphere" },
-          icon: FaGithub,
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const query = await getAllBooks();
+
+  if (query.status === "error") {
+    return { redirect: { destination: "/500", permanent: false } };
+  }
+
+  const books = query.data;
+  return {
+    props: {
+      books,
+      config: {
+        layout: {
+          nav: {
+            items: [
+              {
+                span: 1,
+                variant: "secondary",
+                external: true,
+                href: "https://github.com/paul-bokelman/atmosphere",
+                icon: "github",
+              },
+              {
+                span: 3,
+                variant: "primary",
+                href: "/books",
+                children: "Continue",
+              },
+            ],
+          },
         },
-        {
-          span: 3,
-          variant: "primary",
-          link: { href: "/books" },
-          children: "Continue",
+        seo: {
+          title: "Atmosphere",
+          description: "Welcome to Atmosphere, a tool designed to create immersive audiobooks.",
         },
-      ],
+      },
     },
-  },
-  seo: {
-    title: "Atmosphere",
-    description: "Welcome to Atmosphere, a tool designed to create immersive audiobooks.",
-  },
+  };
 };
 
 export default Landing;

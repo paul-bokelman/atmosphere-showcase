@@ -14,8 +14,10 @@ function formatDurationDisplay(duration: number) {
 interface AudioPlayerProps {
   color: string;
   currentChapter: Chapter;
-  chapterIndex: number;
+  chapterNumber: number;
   totalChapters: number;
+  nextChapterDisabled: boolean;
+  prevChapterDisabled: boolean;
   onNext: () => void;
   onPrev: () => void;
 }
@@ -23,14 +25,14 @@ interface AudioPlayerProps {
 export const AudioPlayer = ({
   color,
   currentChapter,
-  chapterIndex,
+  chapterNumber,
   totalChapters,
+  nextChapterDisabled,
+  prevChapterDisabled,
   onNext,
   onPrev,
 }: AudioPlayerProps) => {
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
-
-  console.log("currentChapter", currentChapter);
 
   const [isReady, setIsReady] = React.useState(false);
   const [duration, setDuration] = React.useState(0);
@@ -43,15 +45,10 @@ export const AudioPlayer = ({
 
   React.useEffect(() => {
     audioRef.current?.pause();
-
-    const timeout = setTimeout(() => {
-      audioRef.current?.play();
-    }, 500);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [chapterIndex]);
+    setIsPlaying(false);
+    setBuffered(0);
+    setCurrentProgress(0);
+  }, [chapterNumber]);
 
   const handleNext = () => {
     onNext();
@@ -133,16 +130,16 @@ export const AudioPlayer = ({
       </div>
 
       <div className="w-full grid grid-cols-2 md:grid-cols-3 items-center">
-        <span className="text-secondary">Chapter {chapterIndex + 1}</span>
+        <span className="text-secondary">Chapter {chapterNumber}</span>
         <div className="flex items-center gap-8 ml-auto md:mx-auto">
-          <MoveChapterButton direction="prev" onClick={handlePrev} disabled={chapterIndex === 0} />
+          <MoveChapterButton direction="prev" onClick={handlePrev} disabled={prevChapterDisabled} />
           <PlayPauseButton
             color={color}
             disabled={!isReady}
             onClick={togglePlayPause}
             state={isPlaying ? "playing" : isReady ? "paused" : "loading"}
           />
-          <MoveChapterButton direction="next" onClick={handleNext} disabled={chapterIndex === totalChapters - 1} />
+          <MoveChapterButton direction="next" onClick={handleNext} disabled={nextChapterDisabled} />
         </div>
       </div>
     </div>

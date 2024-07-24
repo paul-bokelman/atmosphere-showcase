@@ -4,17 +4,30 @@ import type { LayoutOptions, SEOOptions } from "~/partials/layout";
 
 export type ServerError = { message: string };
 
-export type ExtendedAppProps<P = any> = AppProps<P> & {
-  Component: NextPageWithConfig;
-  pageProps: P;
+export type ExtendedAppProps = AppProps<PropsWithConfig> & {
+  Component: NextPage<PropsWithConfig<unknown>>;
+  pageProps: PropsWithConfig;
 };
 
-export type NextPageWithConfig<P = unknown, IP = P> = NextPage<P, IP> & {
+export type PropsWithConfig<P = unknown> = P & {
   config: {
     layout: LayoutOptions;
     seo: SEOOptions;
   };
 };
+
+export type QueryErrorResponse = {
+  status: "error";
+  data: undefined;
+  message: string;
+};
+
+export type QuerySuccessResponse<T> = {
+  status: "success";
+  data: T;
+};
+
+export type QueryResponse<T> = QueryErrorResponse | QuerySuccessResponse<T>;
 
 export type AmbientSection = {
   start: number;

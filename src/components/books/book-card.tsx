@@ -2,7 +2,7 @@ import type { Book } from "~/types";
 import Link from "next/link";
 import { secondsToTimestamp } from "~/lib/utils";
 
-export const BookPreview: React.FC<Book> = ({ slug, title, cover, author, date, chapters, length, genre }) => {
+export const BookCard: React.FC<Book> = ({ slug, title, cover, author, date, chapters, length, genre }) => {
   return (
     <Link href={`/books/${slug}`} className="w-fit flex items-center gap-8 group cursor-pointer">
       {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -1,8 +1,17 @@
-import type { NextPage } from "next";
+import type { NextPage, NextApiRequest, NextApiResponse } from "next";
 import type { AppProps } from "next/app";
 import type { LayoutOptions, SEOOptions } from "~/partials/layout";
 
+/* --------------------------------- SERVER --------------------------------- */
+
+export type Handler<R = unknown, P = unknown> = (
+  req: NextApiRequest & R,
+  res: NextApiResponse<ServerResponse<P>>
+) => Promise<void>;
+
 export type ServerError = { message: string };
+
+/* --------------------------------- CLIENT --------------------------------- */
 
 export type ExtendedAppProps = AppProps<PropsWithConfig> & {
   Component: NextPage<PropsWithConfig<unknown>>;
@@ -29,30 +38,36 @@ export type QuerySuccessResponse<T> = {
 
 export type QueryResponse<T> = QueryErrorResponse | QuerySuccessResponse<T>;
 
-export type AmbientSection = {
-  start: number;
-  end: number;
-  description: string;
-};
+/* --------------------------------- SHARED --------------------------------- */
 
-export type Chapter = {
-  title: string;
-  audio: string;
-  paragraphs: string[];
-  ambientSections: AmbientSection[];
-};
+export type ServerResponse<T> = ({ status: "success" } & T) | ({ status: "error" } & ServerError);
 
-export type Book = {
-  slug: string;
-  title: string;
-  description: string;
-  cover: string;
-  author: string;
-  date: string;
-  length: number; // in minutes
-  genre: string;
-  accentColor: string;
-  chapters: Chapter[];
-};
+// todo: remove these unused types
 
-export type Books = Book[];
+// export type AmbientSection = {
+//   start: number;
+//   end: number;
+//   description: string;
+// };
+
+// export type Chapter = {
+//   title: string;
+//   audio: string;
+//   paragraphs: string[];
+//   ambientSections: AmbientSection[];
+// };
+
+// export type Book = {
+//   slug: string;
+//   title: string;
+//   description: string;
+//   cover: string;
+//   author: string;
+//   date: string;
+//   length: number; // in minutes
+//   genre: string;
+//   accentColor: string;
+//   chapters: Chapter[];
+// };
+
+// export type Books = Book[];

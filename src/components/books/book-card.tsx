@@ -9,7 +9,9 @@ export const BookCard: React.FC<Book> = ({ slug, title, cover, author, date, cha
       <img src={cover} alt={title} className="rounded-lg w-[100px] group-hover:scale-105 transition-transform" />
       <div className="flex flex-col gap-2">
         <h2 className="text-base font-bold text-primary font-primary group-hover:text-accent">{title}</h2>
-        <span className="w-fit text-sm px-1.5 py-0.5 bg-accent/10 text-accent rounded-md">{genre}</span>
+        <div className="flex justify-center items-center w-fit text-sm px-1.5 py-0.5 bg-accent/10 text-accent rounded-md">
+          <span className="relative top-0.5">{genre}</span>
+        </div>
         <span className="text-secondary text-sm md:text-base">
           {author} • {date}
         </span>

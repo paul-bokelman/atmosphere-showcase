@@ -1,8 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { Books } from "~/types";
+import type { Book } from "@prisma/client";
+import type { Handler } from "~/types";
+import { prisma } from "~/lib/server";
 
 // replace with db
-export const books: Books = [
+export const books = [
   {
     slug: "the-great-gatsby",
     title: "The Great Gatsby",
@@ -172,6 +173,16 @@ export const books: Books = [
   },
 ];
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<Books>) {
-  res.status(200).json(books);
-}
+export type GetBooksParams = {};
+export type GetBooksPayload = { books: Book[] };
+
+const handler: Handler<GetBooksParams, GetBooksPayload> = async (req, res) => {
+  try {
+    const books = await prisma.book.findMany();
+    return res.status(200).json({ status: "success", books });
+  } catch (e) {
+    return res.status(500).json({ status: "error", message: "Internal Server Error" });
+  }
+};
+
+export default handler;

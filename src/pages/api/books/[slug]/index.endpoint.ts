@@ -1,11 +1,11 @@
 import type { Book } from "@prisma/client";
-import type { Handler } from "~/types";
+import type { ServerRoute } from "~/types";
 import { prisma } from "~/lib/server";
 
 export type GetBookParams = { query: { slug: string } };
 export type GetBookPayload = Book;
 
-const handler: Handler<GetBookParams, GetBookPayload> = async (req, res) => {
+const handler: ServerRoute<GetBookParams, GetBookPayload> = async (req, res) => {
   try {
     const book = await prisma.book.findUnique({
       where: { slug: req.query.slug },

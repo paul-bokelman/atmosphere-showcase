@@ -1,5 +1,5 @@
 import type { Book } from "@prisma/client";
-import type { Handler } from "~/types";
+import type { ServerRoute } from "~/types";
 import { prisma } from "~/lib/server";
 
 // replace with db
@@ -176,7 +176,7 @@ export const books = [
 export type GetBooksParams = {};
 export type GetBooksPayload = { books: Book[] };
 
-const handler: Handler<GetBooksParams, GetBooksPayload> = async (req, res) => {
+const handler: ServerRoute<GetBooksParams, GetBooksPayload> = async (req, res) => {
   try {
     const books = await prisma.book.findMany();
     return res.status(200).json({ status: "success", books });

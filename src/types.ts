@@ -4,9 +4,12 @@ import type { LayoutOptions, SEOOptions } from "~/partials/layout";
 
 /* --------------------------------- SERVER --------------------------------- */
 
-export type Handler<R = unknown, P = unknown> = (
+export type NextFunction = () => void;
+
+export type ServerRoute<R = unknown, P = unknown> = (
   req: NextApiRequest & R,
-  res: NextApiResponse<ServerResponse<P>>
+  res: NextApiResponse<ServerResponse<P>>,
+  next: NextFunction
 ) => Promise<void>;
 
 export type ServerError = { message: string };
@@ -41,6 +44,12 @@ export type QueryResponse<T> = QueryErrorResponse | QuerySuccessResponse<T>;
 /* --------------------------------- SHARED --------------------------------- */
 
 export type ServerResponse<T> = ({ status: "success" } & T) | ({ status: "error" } & ServerError);
+
+/* ---------------------------------- UTILS --------------------------------- */
+
+export type AddParameters<TFunction extends (...args: any) => any, TParameters extends [...args: any]> = (
+  ...args: [...Parameters<TFunction>, ...TParameters]
+) => ReturnType<TFunction>;
 
 // todo: remove these unused types
 

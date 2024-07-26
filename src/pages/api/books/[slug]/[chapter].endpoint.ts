@@ -1,5 +1,5 @@
 import type { AmbientSection, Book, Chapter } from "@prisma/client";
-import type { Handler } from "~/types";
+import type { ServerRoute } from "~/types";
 import { prisma } from "~/lib/server";
 
 export type GetBookChapterParams = { query: { slug: string; chapter: string } };
@@ -8,7 +8,7 @@ export type GetBookChapterPayload = Chapter & {
   book: Pick<Book, "title" | "author" | "accentColor">;
 };
 
-const handler: Handler<GetBookChapterParams, GetBookChapterPayload> = async (req, res) => {
+const handler: ServerRoute<GetBookChapterParams, GetBookChapterPayload> = async (req, res) => {
   try {
     const chapter = await prisma.chapter.findFirst({
       where: { number: parseInt(req.query.chapter), book: { slug: req.query.slug } },

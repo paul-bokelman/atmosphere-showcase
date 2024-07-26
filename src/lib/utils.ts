@@ -1,4 +1,4 @@
-import type { QueryErrorResponse } from "~/types";
+import type { ServerError } from "~/types";
 import axios from "axios";
 
 // convert minutes to hours, minutes, and seconds
@@ -11,16 +11,14 @@ export const secondsToTimestamp = (seconds: number): string => {
 };
 
 // handler server errors
-export const handleQueryError = (error: unknown): QueryErrorResponse => {
+export const handleQueryError = (error: unknown): { status: "error" } & ServerError => {
   if (axios.isAxiosError(error)) {
     return {
-      data: undefined,
       status: "error",
       message: error.message,
     };
   } else {
     return {
-      data: undefined,
       status: "error",
       message: "An unknown error occurred",
     };

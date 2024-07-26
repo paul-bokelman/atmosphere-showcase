@@ -33,22 +33,11 @@ export type PropsWithConfig<P = unknown> = P & {
   };
 };
 
-export type QueryErrorResponse = {
-  status: "error";
-  data: undefined;
-  message: string;
-};
-
-export type QuerySuccessResponse<T> = {
-  status: "success";
-  data: T;
-};
-
-export type QueryResponse<T> = QueryErrorResponse | QuerySuccessResponse<T>;
+export type Query<T, R = unknown> = (args: Omit<T, "method">) => Promise<ServerResponse<R>>;
 
 /* --------------------------------- SHARED --------------------------------- */
 
-export type ServerResponse<T> = ({ status: "success" } & T) | ({ status: "error" } & ServerError);
+export type ServerResponse<T = unknown> = ({ status: "success" } & T) | ({ status: "error" } & ServerError);
 
 /* ---------------------------------- UTILS --------------------------------- */
 

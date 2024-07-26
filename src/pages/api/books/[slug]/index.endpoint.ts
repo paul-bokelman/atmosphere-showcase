@@ -1,25 +1,38 @@
 import type { Book } from "@prisma/client";
 import type { ServerRoute } from "~/types";
-import { prisma } from "~/lib/server";
+import { prisma, handler, allowMethods, isAuthenticated } from "~/lib/server";
 
-export type GetBookParams = { query: { slug: string } };
-export type GetBookPayload = Book;
+export type GetBookParams = { method: "GET"; query: { slug: string } };
+export type GetBookPayload = { method: "GET"; book: Book };
 
-const handler: ServerRoute<GetBookParams, GetBookPayload> = async (req, res) => {
+export type DeleteBookParams = { method: "DELETE"; query: { slug: string } };
+export type DeleteBookPayload = { method: "DELETE"; message: string };
+type Params = GetBookParams | DeleteBookParams;
+type Payload = GetBookPayload | DeleteBookPayload;
+
+const getBook: ServerRoute<Params, Payload> = async (req, res) => {
   try {
-    const book = await prisma.book.findUnique({
-      where: { slug: req.query.slug },
-      include: { chapters: { include: { ambientSections: true } } },
-    });
+    if (req.method === "GET") {
+      const book = await prisma.book.findUnique({
+        where: { slug: req.query.slug },
+        include: { chapters: { include: { ambientSections: true } } },
+      });
 
-    if (!book) {
-      return res.status(404).json({ status: "error", message: "Book not found" });
+      if (!book) {
+        return res.status(404).json({ status: "error", message: "Book not found" });
+      }
+
+      return res.status(200).json({ status: "success", method: "GET", book });
     }
 
-    return res.status(200).json({ status: "success", ...book });
-  } catch (error) {
+    if (req.method === "DELETE") {
+      await prisma.book.delete({ where: { slug: req.query.slug } });
+      return res.status(200).json({ status: "success", method: "DELETE", message: "Book deleted" });
+    }
+  } catch (e) {
+    console.error(e);
     return res.status(500).json({ status: "error", message: "Internal server error" });
   }
 };
 
-export default handler;
+export default handler(allowMethods(["GET", "DELETE"]), isAuthenticated(["DELETE"]), getBook);

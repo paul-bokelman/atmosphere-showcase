@@ -1,8 +1,8 @@
-import type { Book } from "@prisma/client";
+import type { AmbientSection, Book, Chapter } from "@prisma/client";
 import type { ServerRoute } from "~/types";
-import { prisma } from "~/lib/server";
+import { prisma, handler, allowMethods, isAuthenticated } from "~/lib/server";
 
-// replace with db
+// todo: replace with db
 export const books = [
   {
     slug: "the-great-gatsby",
@@ -173,16 +173,53 @@ export const books = [
   },
 ];
 
-export type GetBooksParams = {};
-export type GetBooksPayload = { books: Book[] };
+export type GetBooksParams = { method: "GET"; body: {} };
+export type GetBooksPayload = { method: "GET"; books: Book[] };
 
-const handler: ServerRoute<GetBooksParams, GetBooksPayload> = async (req, res) => {
+export type CreateBookParams = {
+  method: "POST";
+  body: Omit<Book, "id" | "createdAt" | "updatedAt"> & {
+    chapters: (Omit<Chapter, "id" | "bookId" | "createdAt" | "updatedAt"> & {
+      ambientSections: Omit<AmbientSection, "id" | "chapterId" | "createdAt" | "updatedAt">[];
+    })[];
+  };
+};
+export type CreateBooksPayload = { method: "POST"; message: string };
+
+type Params = GetBooksParams | CreateBookParams;
+type Payload = GetBooksPayload | CreateBooksPayload;
+
+const getBooks: ServerRoute<Params, Payload> = async (req, res) => {
   try {
-    const books = await prisma.book.findMany();
-    return res.status(200).json({ status: "success", books });
+    if (req.method === "GET") {
+      const books = await prisma.book.findMany();
+      return res.status(200).json({ status: "success", method: "GET", books });
+    }
+
+    if (req.method === "POST") {
+      const { chapters, ...bookData } = req.body;
+      const { id: bookId } = await prisma.book.create({
+        data: bookData,
+        select: { id: true },
+      });
+
+      for (const chapter of chapters) {
+        const { ambientSections, ...chapterData } = chapter;
+        await prisma.chapter.create({
+          data: {
+            book: { connect: { id: bookId } },
+            ...chapterData,
+            ambientSections: { createMany: { data: ambientSections } },
+          },
+        });
+      }
+
+      return res.status(201).json({ status: "success", method: "POST", message: "Book created successfully" });
+    }
   } catch (e) {
+    console.error(e);
     return res.status(500).json({ status: "error", message: "Internal Server Error" });
   }
 };
 
-export default handler;
+export default handler(allowMethods(["GET", "POST"]), isAuthenticated(["POST"]), getBooks);

@@ -1,8 +1,8 @@
-import type { ServerRoute } from "~/types";
+import type { Middleware } from "~/types";
 import bcrypt from "bcryptjs";
 
 type HttpVerb = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-type AllowMethods = (allowedMethods: HttpVerb[]) => ServerRoute;
+type AllowMethods = (allowedMethods: HttpVerb[]) => Middleware;
 
 export const allowMethods: AllowMethods = (allowedMethods) => async (req, res, next) => {
   if (allowedMethods.includes(req.method as HttpVerb)) {
@@ -15,7 +15,7 @@ export const allowMethods: AllowMethods = (allowedMethods) => async (req, res, n
   }
 };
 
-type IsAuthenticated = (methods: HttpVerb[]) => ServerRoute;
+type IsAuthenticated = (methods: HttpVerb[]) => Middleware;
 
 export const isAuthenticated: IsAuthenticated = (methods) => async (req, res, next) => {
   // if method is not in the list, skip this middleware
@@ -38,6 +38,7 @@ export const isAuthenticated: IsAuthenticated = (methods) => async (req, res, ne
 
     next();
   } catch (e) {
+    console.error(e);
     return res.status(500).send({ status: "error", message: "Internal Server Error" });
   }
 };

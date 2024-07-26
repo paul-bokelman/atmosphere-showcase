@@ -1,6 +1,6 @@
 import type { AmbientSection, Book, Chapter } from "@prisma/client";
 import type { ServerRoute } from "~/types";
-import { prisma } from "~/lib/server";
+import { prisma, handler, allowMethods } from "~/lib/server";
 
 export type GetBookChapterParams = { query: { slug: string; chapter: string } };
 export type GetBookChapterPayload = Chapter & {
@@ -8,7 +8,7 @@ export type GetBookChapterPayload = Chapter & {
   book: Pick<Book, "title" | "author" | "accentColor">;
 };
 
-const handler: ServerRoute<GetBookChapterParams, GetBookChapterPayload> = async (req, res) => {
+const getBookChapter: ServerRoute<GetBookChapterParams, GetBookChapterPayload> = async (req, res) => {
   try {
     const chapter = await prisma.chapter.findFirst({
       where: { number: parseInt(req.query.chapter), book: { slug: req.query.slug } },
@@ -21,8 +21,9 @@ const handler: ServerRoute<GetBookChapterParams, GetBookChapterPayload> = async 
 
     return res.status(200).json({ status: "success", ...chapter });
   } catch (e) {
+    console.error(e);
     return res.status(500).json({ status: "error", message: "Internal Server Error" });
   }
 };
 
-export default handler;
+export default handler(allowMethods(["GET"]), getBookChapter);

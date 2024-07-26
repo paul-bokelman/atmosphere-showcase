@@ -1,11 +1,11 @@
 import type { Book } from "@prisma/client";
 import type { ServerRoute } from "~/types";
-import { prisma } from "~/lib/server";
+import { prisma, handler, allowMethods } from "~/lib/server";
 
 export type GetBookPreviewParams = { query: { slug: string } };
 export type GetBookPreviewPayload = Book;
 
-const handler: ServerRoute<GetBookPreviewParams, GetBookPreviewPayload> = async (req, res) => {
+const getBookPreview: ServerRoute<GetBookPreviewParams, GetBookPreviewPayload> = async (req, res) => {
   try {
     const book = await prisma.book.findUnique({ where: { slug: req.query.slug } });
 
@@ -19,4 +19,4 @@ const handler: ServerRoute<GetBookPreviewParams, GetBookPreviewPayload> = async 
     return res.status(500).json({ status: "error", message: "Internal Server Error" });
   }
 };
-export default handler;
+export default handler(allowMethods(["GET"]), getBookPreview);

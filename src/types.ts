@@ -7,7 +7,12 @@ import type { LayoutOptions, SEOOptions } from "~/partials/layout";
 export type NextFunction = () => void;
 
 export type ServerRoute<R = unknown, P = unknown> = (
-  req: NextApiRequest & R,
+  req: Modify<NextApiRequest, R>,
+  res: NextApiResponse<ServerResponse<P>>
+) => Promise<void>;
+
+export type Middleware<R = unknown, P = unknown> = (
+  req: Modify<NextApiRequest, R>,
   res: NextApiResponse<ServerResponse<P>>,
   next: NextFunction
 ) => Promise<void>;
@@ -51,32 +56,4 @@ export type AddParameters<TFunction extends (...args: any) => any, TParameters e
   ...args: [...Parameters<TFunction>, ...TParameters]
 ) => ReturnType<TFunction>;
 
-// todo: remove these unused types
-
-// export type AmbientSection = {
-//   start: number;
-//   end: number;
-//   description: string;
-// };
-
-// export type Chapter = {
-//   title: string;
-//   audio: string;
-//   paragraphs: string[];
-//   ambientSections: AmbientSection[];
-// };
-
-// export type Book = {
-//   slug: string;
-//   title: string;
-//   description: string;
-//   cover: string;
-//   author: string;
-//   date: string;
-//   length: number; // in minutes
-//   genre: string;
-//   accentColor: string;
-//   chapters: Chapter[];
-// };
-
-// export type Books = Book[];
+export type Modify<T, R> = Omit<T, keyof R> & R;

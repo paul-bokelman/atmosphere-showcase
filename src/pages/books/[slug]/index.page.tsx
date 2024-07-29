@@ -1,16 +1,21 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next";
-import type { Book, PropsWithConfig } from "~/types";
+import type { PropsWithConfig } from "~/types";
+import type { GetBookPayload } from "~/pages/api/books";
 import { getBook, getAllBooks } from "~/lib/queries";
 import { ScrollContainer } from "~/components";
 
-type Props = PropsWithConfig<{ book: Book }>;
+type Props = PropsWithConfig<GetBookPayload>;
 
 const BookPreview: NextPage<Props> = ({ book }) => {
   return (
     <div className="w-full flex flex-col gap-2 items-center justify-center">
       <div className="w-full grid grid-cols-1 md:grid-cols-2 justify-center items-center md:mt-8 max-h-[350px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={book.cover} alt={book.title} className="rounded-lg h-[250px] md:h-[350px] mx-auto" />
+        <img
+          src={book.cover ?? "https://www.marytribble.com/wp-content/uploads/2020/12/book-cover-placeholder.png"}
+          alt={book.title}
+          className="rounded-lg h-[250px] md:h-[350px] mx-auto"
+        />
         <div className="flex flex-col gap-2 items-center md:items-start mx-auto mt-8 md:mt-0">
           <h1 className="text-lg font-bold text-primary font-primary">{book.title}</h1>
           <span className="text-secondary font-secondary">{book.author}</span>
@@ -26,13 +31,13 @@ const BookPreview: NextPage<Props> = ({ book }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const query = await getAllBooks();
+  const query = await getAllBooks({ body: {} });
 
   if (query.status === "error") {
     return { paths: [], fallback: false };
   }
 
-  const books = query.data;
+  const books = query.books;
 
   const paths = books.map(({ slug }) => ({ params: { slug } }));
 
@@ -41,17 +46,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const slug = params?.slug as string;
-  const query = await getBook(slug);
+  const query = await getBook({ query: { slug } });
 
   if (query.status === "error") {
     return { notFound: true };
   }
 
-  const book = query.data;
-
   return {
     props: {
-      book,
+      ...query,
       config: {
         layout: {
           header: {
@@ -64,7 +67,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
                 span: 2,
                 variant: "reactive",
                 href: `/books/${slug}/1`,
-                bg: book.accentColor,
+                bg: query.book.accentColor ?? "#E9D8A6",
                 color: "#fff",
                 children: "Read",
               },
@@ -72,8 +75,8 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
           },
         },
         seo: {
-          title: `${book.title} | Preview`,
-          description: `Preview of ${book.title} by ${book.author}`,
+          title: `${query.book.title} | Preview`,
+          description: `Preview of ${query.book.title} by ${query.book.author}`,
         },
       },
     },

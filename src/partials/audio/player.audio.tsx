@@ -1,5 +1,5 @@
-import type { Chapter } from "~/types";
 import * as React from "react";
+import type { GetBookChapterPayload } from "~/pages/api/books";
 import { AudioProgressBar, MoveChapterButton, PlayPauseButton } from "~/partials/audio";
 
 function formatDurationDisplay(duration: number) {
@@ -13,9 +13,8 @@ function formatDurationDisplay(duration: number) {
 
 interface AudioPlayerProps {
   color: string;
-  currentChapter: Chapter;
+  currentChapter: GetBookChapterPayload["chapter"];
   chapterNumber: number;
-  totalChapters: number;
   nextChapterDisabled: boolean;
   prevChapterDisabled: boolean;
   onNext: () => void;
@@ -26,7 +25,6 @@ export const AudioPlayer = ({
   color,
   currentChapter,
   chapterNumber,
-  totalChapters,
   nextChapterDisabled,
   prevChapterDisabled,
   onNext,

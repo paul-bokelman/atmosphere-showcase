@@ -1,11 +1,12 @@
 import type { NextPage, GetStaticProps } from "next";
-import type { Books, PropsWithConfig } from "~/types";
+import type { PropsWithConfig } from "~/types";
+import type { GetBooksPayload } from "~/pages/api/types";
 import React from "react";
 import { animate, motion, useMotionValue } from "framer-motion";
 import { Logo } from "~/components";
 import { getAllBooks } from "~/lib/queries";
 
-type Props = PropsWithConfig<{ books: Books }>;
+type Props = PropsWithConfig<{ books: GetBooksPayload["books"] }>;
 
 const Landing: NextPage<Props> = ({ books }) => {
   const [sliderTrackRef, setSliderTrackRef] = React.useState<HTMLDivElement | null>(null);
@@ -43,7 +44,12 @@ const Landing: NextPage<Props> = ({ books }) => {
           <motion.div ref={(ref) => setSliderTrackRef(ref)} className="w-full flex gap-4" style={{ x: xTranslation }}>
             {[...books, ...books].map((book) => (
               // eslint-disable-next-line @next/next/no-img-element
-              <motion.img key={book.slug} src={book.cover} alt={book.title} className="rounded-2xl h-[218px]" />
+              <motion.img
+                key={book.slug}
+                src={book.cover ?? "https://www.marytribble.com/wp-content/uploads/2020/12/book-cover-placeholder.png"}
+                alt={book.title}
+                className="rounded-2xl h-[218px]"
+              />
             ))}
           </motion.div>
         </div>
@@ -53,13 +59,13 @@ const Landing: NextPage<Props> = ({ books }) => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const query = await getAllBooks();
+  const query = await getAllBooks({ body: {} });
 
   if (query.status === "error") {
     return { redirect: { destination: "/500", permanent: false } };
   }
 
-  const books = query.data;
+  const books = query.books;
   return {
     props: {
       books,

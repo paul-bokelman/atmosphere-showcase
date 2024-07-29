@@ -1,52 +1,55 @@
 import type { NextPage, GetStaticProps, GetStaticPaths } from "next";
-import type { Book, Chapter, PropsWithConfig } from "~/types";
+import type { PropsWithConfig } from "~/types";
+import type { GetBookChapterPayload } from "~/pages/api/books";
 import React from "react";
 import { useRouter } from "next/router";
-import { getBook, getAllBooks } from "~/lib/queries";
+import { getAllBooks, getBookChapter } from "~/lib/queries";
 import { AudioPlayer } from "~/partials/audio";
 
-type Props = PropsWithConfig<{
-  data: { chapter: Chapter } & Pick<Book, "accentColor" | "author" | "title"> & {
-      chapterNumber: number;
-      totalChapters: number;
-    };
-}>;
+type Props = PropsWithConfig<GetBookChapterPayload>;
 
-const ReadBook: NextPage<Props> = ({
-  data: { chapter, chapterNumber, totalChapters, title, author, accentColor },
-  config,
-}) => {
+const ReadBook: NextPage<Props> = ({ chapter, book }) => {
   const router = useRouter();
+  const mainContainerRef = React.useRef<HTMLDivElement | null>(null);
 
-  const nextChapterDisabled = chapterNumber === totalChapters;
-  const prevChapterDisabled = chapterNumber === 1;
+  const totalChapters = book._count.chapters;
+  const nextChapterDisabled = chapter.number === totalChapters;
+  const prevChapterDisabled = chapter.number === 1;
 
   const handleNextChapter = () => {
     if (nextChapterDisabled) return;
-    router.push(`/books/${router.query.slug}/${chapterNumber + 1}`);
+    router.push(`/books/${router.query.slug}/${chapter.number + 1}`);
+    if (mainContainerRef.current) mainContainerRef.current.scrollTo(0, 0);
   };
 
   const handlePrevChapter = () => {
     if (prevChapterDisabled) return;
-    router.push(`/books/${router.query.slug}/${chapterNumber - 1}`);
+    router.push(`/books/${router.query.slug}/${chapter.number - 1}`);
+    if (mainContainerRef.current) mainContainerRef.current.scrollTo(0, 0);
   };
 
   return (
     <div className="w-full flex flex-col gap-2 items-center justify-center ">
       <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-4 h-[calc(100vh-182px-86px)] overflow-scroll no-scrollbar">
+        <div
+          ref={mainContainerRef}
+          className="flex flex-col gap-4 h-[calc(100vh-182px-86px)] overflow-scroll no-scrollbar"
+        >
           <div className="flex flex-col gap-2">
             <div className="relative flex items-center gap-4">
-              <div style={{ background: accentColor }} className="relative bottom-[1px] h-1 w-12 rounded-full" />
-              <span className="text-secondary font-secondary text-sm">{author}</span>
+              <div
+                style={{ background: book.accentColor ?? "#E9D8A6" }}
+                className="relative bottom-[1px] h-1 w-12 rounded-full"
+              />
+              <span className="text-secondary font-secondary text-sm">{book.author}</span>
             </div>
-            <h1 className="font-primary text-lg">{title}</h1>
+            <h1 className="font-primary text-lg">{book.title}</h1>
           </div>
           <div className="flex flex-col gap-6 text-secondary font-light mt-6">
             <h2 className="font-primary text-lg">
-              Chapter {chapterNumber}: {chapter.title}
+              Chapter {chapter.number}: {chapter.name}
             </h2>
-            {chapter.paragraphs.map((paragraph, index) => (
+            {chapter.text.split("\n").map((paragraph, index) => (
               <p key={index} className="leading-8">
                 {paragraph}
               </p>
@@ -55,10 +58,9 @@ const ReadBook: NextPage<Props> = ({
         </div>
         <div className="mt-10">
           <AudioPlayer
-            color={accentColor}
+            color={book.accentColor ?? "#E9D8A6"}
             currentChapter={chapter}
-            totalChapters={totalChapters}
-            chapterNumber={chapterNumber}
+            chapterNumber={chapter.number}
             nextChapterDisabled={nextChapterDisabled}
             prevChapterDisabled={prevChapterDisabled}
             onNext={handleNextChapter}
@@ -71,16 +73,15 @@ const ReadBook: NextPage<Props> = ({
 };
 
 export const getStaticPaths: GetStaticPaths = async (context) => {
-  const query = await getAllBooks();
+  const query = await getAllBooks({ body: {} });
 
   if (query.status === "error") {
     return { paths: [], fallback: false };
   }
 
-  const books = query.data;
   const paths = [];
-  for (const book of books) {
-    for (let i = 1; i <= book.chapters.length; i++) {
+  for (const book of query.books) {
+    for (let i = 1; i <= book._count.chapters; i++) {
       paths.push({ params: { slug: book.slug, chapter: i.toString() } });
     }
   }
@@ -90,32 +91,23 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const slug = params?.slug as string;
-  const chapter = parseInt(params?.chapter as string);
-  const query = await getBook(slug);
+  const chapterNumber = params?.chapter as string;
+  const query = await getBookChapter({ query: { slug, chapter: chapterNumber } });
 
   if (query.status === "error") {
     return { notFound: true };
   }
 
-  const book = query.data;
+  const { chapter, book } = query;
 
   return {
     props: {
-      data: {
-        chapter: book.chapters[chapter - 1],
-        chapterNumber: chapter,
-        totalChapters: book.chapters.length,
-        title: book.title,
-        author: book.author,
-        accentColor: book.accentColor,
-      },
+      ...query,
       config: {
         layout: { header: { view: "backtrack", text: book.title } },
         seo: {
-          title: `${book.title} - ${book.chapters[chapter - 1].title}`,
-          description: `Reading Chapter ${chapter} (${book.chapters[chapter - 1].title}) of ${book.title} by ${
-            book.author
-          }`,
+          title: `${query.book.title} - ${chapter.name}`,
+          description: `Reading Chapter ${chapter} (${chapter.name}) of ${book.title} by ${book.author}`,
         },
       },
     },

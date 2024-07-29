@@ -1,12 +1,12 @@
 import type { NextPage, GetStaticProps } from "next";
-import type { Books, PropsWithConfig } from "~/types";
+import type { PropsWithConfig } from "~/types";
+import type { GetBooksPayload } from "~/pages/api/types";
 import React from "react";
-import { getAllBooks } from "~/lib/queries";
+import { getAllBooks, getFeaturedBook } from "~/lib/queries";
 import { ScrollContainer } from "~/components";
 import { BookCard } from "~/components/books";
-import { Loading, Error } from "~/components/states";
 
-type Props = PropsWithConfig<{ books: Books }>;
+type Props = PropsWithConfig<GetBooksPayload>;
 
 const Library: NextPage<Props> = ({ books }) => {
   return (
@@ -24,18 +24,18 @@ const Library: NextPage<Props> = ({ books }) => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const query = await getAllBooks();
+  const query = await getAllBooks({ body: {} });
+  const featuredQuery = await getFeaturedBook({});
 
-  if (query.status === "error") {
+  if (query.status === "error" || featuredQuery.status === "error") {
     return { redirect: { destination: "/500", permanent: false } };
   }
 
-  const books = query.data;
-  const randomBook = books[Math.floor(Math.random() * books.length)];
+  const randomBook = query.books[Math.floor(Math.random() * query.books.length)];
 
   return {
     props: {
-      books,
+      ...query,
       config: {
         layout: {
           header: {
@@ -44,7 +44,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
           nav: {
             items: [
               // { span: 1, variant: "secondary", icon: "library", href: "/books", active: true },
-              { span: 1, variant: "secondary", icon: "featured", href: `/books/${books[0].slug}` },
+              { span: 1, variant: "secondary", icon: "featured", href: `/books/${featuredQuery.slug}` },
               { span: 2, variant: "primary", children: "Random", href: `/books/${randomBook.slug}` },
             ],
           },

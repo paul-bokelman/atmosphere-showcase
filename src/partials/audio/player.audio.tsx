@@ -128,7 +128,7 @@ export const AudioPlayer = ({
       </div>
 
       <div className="w-full grid grid-cols-2 md:grid-cols-3 items-center">
-        <span className="text-secondary">Chapter {chapterNumber}</span>
+        <span className="text-secondary">{currentChapter.name}</span>
         <div className="flex items-center gap-8 ml-auto md:mx-auto">
           <MoveChapterButton direction="prev" onClick={handlePrev} disabled={prevChapterDisabled} />
           <PlayPauseButton

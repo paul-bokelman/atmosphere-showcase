@@ -30,7 +30,7 @@ model Chapter {
   name            String
   text            String
   bookId          Int
-  book            Book             @relation(fields: [bookId], references: [id])
+  book            Book             @relation(fields: [bookId], references: [id], onDelete: Cascade)
   ambientSections AmbientSection[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
@@ -42,7 +42,7 @@ model AmbientSection {
   end         Int
   description String
   chapterId   Int
-  chapter     Chapter  @relation(fields: [chapterId], references: [id])
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

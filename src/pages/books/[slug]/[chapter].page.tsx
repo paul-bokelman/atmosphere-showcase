@@ -46,9 +46,7 @@ const ReadBook: NextPage<Props> = ({ chapter, book }) => {
             <h1 className="font-primary text-lg">{book.title}</h1>
           </div>
           <div className="flex flex-col gap-6 text-secondary font-light mt-6">
-            <h2 className="font-primary text-lg">
-              Chapter {chapter.number}: {chapter.name}
-            </h2>
+            <h2 className="font-primary text-lg">{chapter.name}</h2>
             {chapter.text.split("\n").map((paragraph, index) => (
               <p key={index} className="leading-8">
                 {paragraph}
@@ -106,7 +104,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
       config: {
         layout: { header: { view: "backtrack", text: book.title } },
         seo: {
-          title: `${query.book.title} - ${chapter.name}`,
+          title: `${query.book.title} | ${chapter.name}`,
           description: `Reading Chapter ${chapter} (${chapter.name}) of ${book.title} by ${book.author}`,
         },
       },

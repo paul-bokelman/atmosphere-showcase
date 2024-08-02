@@ -1,6 +1,6 @@
-import type { AmbientSection as AmbientSectionType } from "~/types";
+import type { AmbientSection as IAmbientSection } from "@prisma/client";
 
-type Props = AmbientSectionType & {
+type Props = IAmbientSection & {
   color: string;
   totalDuration: number;
   currentProgress: number;

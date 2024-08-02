@@ -1,4 +1,4 @@
-import type { AmbientSection as AmbientSectionType } from "~/types";
+import type { AmbientSection as IAmbientSection } from "@prisma/client";
 import { AmbientSection } from "~/partials/audio";
 
 interface ProgressCSSProps extends React.CSSProperties {
@@ -13,7 +13,7 @@ type Props = React.ComponentPropsWithoutRef<"input"> & {
   duration: number;
   currentProgress: number;
   buffered: number;
-  ambientSections: AmbientSectionType[];
+  ambientSections: IAmbientSection[];
 };
 
 export const AudioProgressBar: React.FC<Props> = (props) => {

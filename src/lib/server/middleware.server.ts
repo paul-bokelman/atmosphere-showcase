@@ -29,7 +29,7 @@ export const isAuthenticated: IsAuthenticated = (methods) => async (req, res, ne
 
   try {
     const token = req.headers.authorization.split(" ")[1];
-    const hashedKey = await bcrypt.hash(process.env.CU_KEY, 10);
+    const hashedKey = await bcrypt.hash(process.env.AUTH_KEY, 10);
     const isValid = await bcrypt.compare(token, hashedKey);
 
     if (!isValid) {

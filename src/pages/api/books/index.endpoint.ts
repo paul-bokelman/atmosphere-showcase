@@ -28,6 +28,13 @@ const getBooks: ServerRoute<Params, Payload> = async (req, res) => {
 
     if (req.method === "POST") {
       const { chapters, ...bookData } = req.body;
+
+      const existing = await prisma.book.findUnique({ where: { slug: bookData.slug } });
+
+      if (existing) {
+        return res.status(400).json({ status: "error", message: "Book already exists" });
+      }
+
       const { id: bookId } = await prisma.book.create({
         data: bookData,
         select: { id: true },
@@ -53,3 +60,5 @@ const getBooks: ServerRoute<Params, Payload> = async (req, res) => {
 };
 
 export default handler(allowMethods(["GET", "POST"]), isAuthenticated(["POST"]), getBooks);
+
+export const config = { api: { bodyParser: { sizeLimit: "5mb" } } };

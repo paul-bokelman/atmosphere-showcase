@@ -12,7 +12,7 @@ const Library: NextPage<Props> = ({ books }) => {
   return (
     <div className="flex flex-col gap-8">
       <h1 className="text-lg font-bold text-primary font-primary">Immersive Books</h1>
-      <ScrollContainer className="relative h-[calc(100vh-152px-125px)]" blinderHeight={128}>
+      <ScrollContainer className="flex flex-col gap-8 relative h-[calc(100vh-152px-125px)]" blinderHeight={128}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {books.map((book) => (
             <BookCard key={book.slug} {...book} />

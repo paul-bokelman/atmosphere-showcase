@@ -9,22 +9,22 @@ type Props = PropsWithConfig<GetBookPayload>;
 const BookPreview: NextPage<Props> = ({ book }) => {
   return (
     <div className="w-full flex flex-col gap-2 items-center justify-center">
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 justify-center items-center md:mt-8 max-h-[350px]">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 md:mt-8 max-h-[350px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={book.cover ?? "https://www.marytribble.com/wp-content/uploads/2020/12/book-cover-placeholder.png"}
           alt={book.title}
           className="rounded-lg h-[250px] md:h-[350px] mx-auto"
         />
-        <div className="flex flex-col gap-2 items-center md:items-start mx-auto mt-8 md:mt-0">
-          <h1 className="text-lg font-bold text-primary font-primary">{book.title}</h1>
-          <span className="text-secondary font-secondary">{book.author}</span>
-          <ScrollContainer className="mt-6 relative h-48 md:h-60" blinderHeight={50}>
+        <ScrollContainer className="mt-6 md:mt-0 relative h-[18rem] md:h-[30rem]" blinderHeight={50}>
+          <div className="flex flex-col gap-2 items-center md:items-start mx-auto">
+            <h1 className="text-lg text-center md:text-left font-bold text-primary font-primary">{book.title}</h1>
+            <span className="text-secondary font-secondary">{book.author}</span>
             <p className="text-secondary font-secondary leading-8">
               {book.description} {book.description} {book.description}
             </p>
-          </ScrollContainer>
-        </div>
+          </div>
+        </ScrollContainer>
       </div>
     </div>
   );

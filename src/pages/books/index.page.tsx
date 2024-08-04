@@ -10,16 +10,16 @@ type Props = PropsWithConfig<GetBooksPayload>;
 
 const Library: NextPage<Props> = ({ books }) => {
   return (
-    <div className="flex flex-col gap-8">
-      <h1 className="text-lg font-bold text-primary font-primary">Immersive Books</h1>
-      <ScrollContainer className="flex flex-col gap-8 relative h-[calc(100vh-152px-125px)]" blinderHeight={128}>
+    <ScrollContainer className="h-full relative" blinderHeight={128}>
+      <div className="flex flex-col gap-4 md:gap-8">
+        <h1 className="text-lg font-bold text-primary font-primary">Immersive Books</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {books.map((book) => (
             <BookCard key={book.slug} {...book} />
           ))}
         </div>
-      </ScrollContainer>
-    </div>
+      </div>
+    </ScrollContainer>
   );
 };
 
@@ -43,7 +43,6 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
           },
           nav: {
             items: [
-              // { span: 1, variant: "secondary", icon: "library", href: "/books", active: true },
               { span: 1, variant: "secondary", icon: "featured", href: `/books/${featuredQuery.slug}` },
               { span: 2, variant: "primary", children: "Random", href: `/books/${randomBook.slug}` },
             ],

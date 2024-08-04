@@ -88,7 +88,7 @@ export const AudioPlayer = ({
   }, [currentChapter]);
 
   return (
-    <div className="relative flex flex-col gap-8">
+    <div className="relative flex flex-col gap-4 md:gap-8">
       <audio
         ref={audioRef}
         preload="metadata"
@@ -127,9 +127,9 @@ export const AudioPlayer = ({
         <span className="text-secondary text-sm">{durationDisplay}</span>
       </div>
 
-      <div className="w-full grid grid-cols-2 md:grid-cols-3 items-center">
-        <span className="text-secondary">{currentChapter.name}</span>
-        <div className="flex items-center gap-8 ml-auto md:mx-auto">
+      <div className="w-full grid grid-cols-2 items-center">
+        <span className="text-sm md:text-base text-secondary w-[75%] truncate">{currentChapter.name}</span>
+        <div className="flex items-center justify-end w-full md:w-auto gap-4 md:gap-8">
           <MoveChapterButton direction="prev" onClick={handlePrev} disabled={prevChapterDisabled} />
           <PlayPauseButton
             color={color}

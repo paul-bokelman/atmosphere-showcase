@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "dotenv -e .env -- prisma generate --schema ./prisma/schema.prisma",
+    "db:push": "dotenv -e .env -- prisma db push --schema ./prisma/schema.prisma",
+    "db:reset": "dotenv -e .env -- prisma migrate reset --schema ./prisma/schema.prisma",
+    "db:generate:prod": "dotenv -e .env.production -- prisma generate --schema ./prisma/schema.prisma",
+    "db:push:prod": "dotenv -e .env.production -- prisma db push --schema ./prisma/schema.prisma",
+    "db:reset:prod": "dotenv -e .env.production -- prisma migrate reset --schema ./prisma/schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^5.17.0",
@@ -25,6 +31,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "dotenv-cli": "^7.4.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",

@@ -26,8 +26,8 @@ export const getStaticProps = async () => {
           },
         },
         seo: {
-          title: "Page Not Found",
-          description: "The page you are looking for does not exist",
+          title: "500",
+          description: "Something went horrendously wrong.",
         },
       },
     },

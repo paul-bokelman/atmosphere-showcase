@@ -1,7 +1,7 @@
-import type { NextPage, GetStaticProps, GetStaticPaths } from "next";
+import type { NextPage, GetServerSideProps } from "next";
 import type { PropsWithConfig } from "~/types";
 import type { GetBookPayload } from "~/pages/api/books";
-import { getBook, getAllBooks } from "~/lib/queries";
+import { getBook } from "~/lib/queries";
 import { ScrollContainer } from "~/components";
 
 type Props = PropsWithConfig<GetBookPayload>;
@@ -26,21 +26,7 @@ const BookPreview: NextPage<Props> = ({ book }) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const query = await getAllBooks({ body: {} });
-
-  if (query.status === "error") {
-    return { paths: [], fallback: false };
-  }
-
-  const books = query.books;
-
-  const paths = books.map(({ slug }) => ({ params: { slug } }));
-
-  return { paths, fallback: false };
-};
-
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) => {
   const slug = params?.slug as string;
   const query = await getBook({ query: { slug } });
 

@@ -4,9 +4,9 @@ import type { PropsWithConfig } from "~/types";
 
 type Props = PropsWithConfig<{}>;
 
-const Custom404: NextPage<Props> = () => {
+const Custom500: NextPage<Props> = () => {
   return (
-    <div className="w-full h-[calc(100%-10rem)] flex flex-col gap-2 items-center justify-center">
+    <div className="flex flex-col gap-2 items-center justify-center mb-[20rem]">
       <span className="text-accent text-lg">500</span>
       <h1 className="font-primary text-primary text-lg">Something went horrendously wrong</h1>
       <p className="text-secondary text-base">
@@ -34,4 +34,4 @@ export const getStaticProps = async () => {
   };
 };
 
-export default Custom404;
+export default Custom500;

@@ -1,4 +1,4 @@
-import type { NextPage, GetStaticProps } from "next";
+import type { NextPage, GetServerSideProps } from "next";
 import type { PropsWithConfig } from "~/types";
 import type { GetBooksPayload } from "~/pages/api/types";
 import React from "react";
@@ -23,7 +23,7 @@ const Library: NextPage<Props> = ({ books }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const query = await getAllBooks({ body: {} });
   const featuredQuery = await getFeaturedBook({});
 

@@ -14,7 +14,7 @@ import type {
 import axios from "axios";
 import { handleQueryError } from "~/lib/utils";
 
-const client = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_URL });
+const client = axios.create({ baseURL: typeof window != undefined ? process.env.NEXT_PUBLIC_API_URL : "/api" });
 
 export const getAllBooks: Query<GetBooksParams, GetBooksPayload> = async () => {
   try {
@@ -40,6 +40,7 @@ export const getFeaturedBook: Query<GetFeaturedBookParams, GetFeaturedBookPayloa
     const { data } = await client.get<{ status: "success" } & GetFeaturedBookPayload>("/books/featured");
     return data;
   } catch (e) {
+    console.log(e);
     return handleQueryError(e);
   }
 };

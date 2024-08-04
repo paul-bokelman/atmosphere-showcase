@@ -22,7 +22,6 @@ const getBooks: ServerRoute<Params, Payload> = async (req, res) => {
   try {
     if (req.method === "GET") {
       const books = await prisma.book.findMany({ include: { _count: { select: { chapters: true } } } });
-
       return res.status(200).json({ status: "success", method: "GET", books });
     }
 

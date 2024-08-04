@@ -1,9 +1,9 @@
-import type { NextPage, GetStaticProps, GetStaticPaths } from "next";
+import type { NextPage, GetServerSideProps } from "next";
 import type { PropsWithConfig } from "~/types";
 import type { GetBookChapterPayload } from "~/pages/api/books";
 import React from "react";
 import { useRouter } from "next/router";
-import { getAllBooks, getBookChapter } from "~/lib/queries";
+import { getBookChapter } from "~/lib/queries";
 import { AudioPlayer } from "~/partials/audio";
 import { ScrollContainer } from "~/components";
 
@@ -76,24 +76,7 @@ const ReadBook: NextPage<Props> = ({ chapter, book }) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async (context) => {
-  const query = await getAllBooks({ body: {} });
-
-  if (query.status === "error") {
-    return { paths: [], fallback: false };
-  }
-
-  const paths = [];
-  for (const book of query.books) {
-    for (let i = 1; i <= book._count.chapters; i++) {
-      paths.push({ params: { slug: book.slug, chapter: i.toString() } });
-    }
-  }
-
-  return { paths, fallback: false };
-};
-
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) => {
   const slug = params?.slug as string;
   const chapterNumber = params?.chapter as string;
   const query = await getBookChapter({ query: { slug, chapter: chapterNumber } });

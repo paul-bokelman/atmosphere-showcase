@@ -18,7 +18,7 @@ export type CreateBooksPayload = { method: "POST"; message: string };
 type Params = GetBooksParams | CreateBookParams;
 type Payload = GetBooksPayload | CreateBooksPayload;
 
-const getBooks: ServerRoute<Params, Payload> = async (req, res) => {
+const books: ServerRoute<Params, Payload> = async (req, res) => {
   try {
     if (req.method === "GET") {
       const books = await prisma.book.findMany({ include: { _count: { select: { chapters: true } } } });
@@ -58,6 +58,6 @@ const getBooks: ServerRoute<Params, Payload> = async (req, res) => {
   }
 };
 
-export default handler(allowMethods(["GET", "POST"]), isAuthenticated(["POST"]), getBooks);
+export default handler(allowMethods(["GET", "POST"]), isAuthenticated(["POST"]), books);
 
 export const config = { api: { bodyParser: { sizeLimit: "5mb" } } };

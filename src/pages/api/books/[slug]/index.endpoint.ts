@@ -10,7 +10,7 @@ export type DeleteBookPayload = { method: "DELETE"; message: string };
 type Params = GetBookParams | DeleteBookParams;
 type Payload = GetBookPayload | DeleteBookPayload;
 
-const getBook: ServerRoute<Params, Payload> = async (req, res) => {
+const book: ServerRoute<Params, Payload> = async (req, res) => {
   try {
     if (req.method === "GET") {
       const book = await prisma.book.findUnique({
@@ -35,4 +35,4 @@ const getBook: ServerRoute<Params, Payload> = async (req, res) => {
   }
 };
 
-export default handler(allowMethods(["GET", "DELETE"]), isAuthenticated(["DELETE"]), getBook);
+export default handler(allowMethods(["GET", "DELETE"]), isAuthenticated(["DELETE"]), book);

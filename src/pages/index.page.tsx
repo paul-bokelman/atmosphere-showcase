@@ -38,7 +38,7 @@ const Landing: NextPage<Props> = ({ books }) => {
         of storytelling with advanced technology that{" "}
         <span className="text-primary font-semibold">brings your favorite narratives to life</span>.
       </p>
-      <div className="relative w-full mt-20">
+      <div className="relative w-full mt-12 md:mt-20">
         <div className="relative w-[calc(100%+100px)] right-[50px] h-full pointer-events-none overflow-hidden">
           <div className="absolute z-10 w-full left-0 h-[200px] md:h-[218px] bg-gradient-to-r from-bg via-bg/0 to-bg" />
           <motion.div ref={(ref) => setSliderTrackRef(ref)} className="w-full flex gap-4" style={{ x: xTranslation }}>
@@ -54,6 +54,7 @@ const Landing: NextPage<Props> = ({ books }) => {
           </motion.div>
         </div>
       </div>
+      <div className="absolute bottom-0 left-0 w-full h-[110px] bg-gradient-to-b from-bg/[60] rounded-full to-bg" />
     </div>
   );
 };

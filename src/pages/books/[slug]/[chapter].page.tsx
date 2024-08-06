@@ -79,7 +79,7 @@ const ReadBook: NextPage<Props> = ({ chapter, book }) => {
 export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) => {
   const slug = params?.slug as string;
   const chapterNumber = params?.chapter as string;
-  const query = await getBookChapter({ query: { slug, chapter: chapterNumber } });
+  const query = await getBookChapter({ query: { slug, chapter: chapterNumber }, body: {} });
 
   if (query.status === "error") {
     return { notFound: true };

@@ -94,5 +94,3 @@ const bookChapter: ServerRoute<Params, Payload> = async (req, res) => {
 };
 
 export default handler(allowMethods(["GET", "POST", "DELETE"]), isAuthenticated(["POST", "DELETE"]), bookChapter);
-
-export const config = { api: { bodyParser: { sizeLimit: "5mb" } } };

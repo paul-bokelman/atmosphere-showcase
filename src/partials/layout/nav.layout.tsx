@@ -14,7 +14,7 @@ export const LayoutNavigation: React.FC<Props> = ({ items }) => {
   return (
     <div className="z-10 w-full flex justify-center items-center">
       <div
-        className="w-full md:w-[400px] grid gap-2 md:gap-4"
+        className="w-full md:w-[400px] grid gap-3 md:gap-4"
         style={{ gridTemplateColumns: `repeat(${totalColumns}, minmax(0, 1fr))` }}
       >
         {items.map(({ span, ...rest }, index) => (

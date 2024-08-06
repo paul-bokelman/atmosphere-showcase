@@ -39,7 +39,7 @@ const ReadBook: NextPage<Props> = ({ chapter, book }) => {
       <ScrollContainer
         shouldScrollState={shouldScrollState}
         // technical debt (not actually responsive)...
-        className="relative h-[calc(100vh-240px)] md:h-[calc(100vh-268px)] "
+        className="relative h-[calc(100dvh-240px)] md:h-[calc(100dvh-268px)] "
         blinderHeight={64}
       >
         <div className="flex flex-col gap-2">

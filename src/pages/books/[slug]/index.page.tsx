@@ -17,9 +17,11 @@ const BookPreview: NextPage<Props> = ({ book }) => {
           className="rounded-lg h-[300px] md:h-[350px] mx-auto"
         />
         <div className="flex flex-col gap-2 items-center mx-auto">
-          <h1 className="text-lg text-center font-bold text-primary font-primary">{book.title}</h1>
-          <span className="text-secondary font-secondary">{book.author}</span>
-          <p className="text-secondary font-secondary leading-8">{book.description}</p>
+          <h1 className="sm:text-lg text-center font-bold text-primary font-primary">{book.title}</h1>
+          <span className="text-sm sm:text-base text-secondary font-secondary">{book.author}</span>
+          <p className="text-sm sm:text-base text-secondary font-secondary leading-6 sm:leading-8">
+            {book.description}
+          </p>
         </div>
       </div>
     </ScrollContainer>

@@ -32,7 +32,7 @@ const Landing: NextPage<Props> = ({ books }) => {
     <div className="w-full md:w-[600px] mx-auto flex flex-col items-center justify-center mt-20">
       <Logo />
       <h1 className="text-primary text-lg font-primary mt-4 mb-8">Atmosphere</h1>
-      <p className="text-secondary text-center">
+      <p className="text-sm sm:text-base text-secondary text-center">
         Welcome to <span className="text-primary font-semibold">Atmosphere</span>, a tool designed to create immersive
         audiobooks <span className="text-primary font-semibold">powered by Google Gemini</span>. Experience the future
         of storytelling with advanced technology that{" "}

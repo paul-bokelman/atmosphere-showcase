@@ -35,7 +35,7 @@ const ReadBook: NextPage<Props> = ({ chapter, book }) => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-2 items-center justify-center">
+    <div className="h-full w-full flex flex-col gap-2 items-center justify-center">
       <ScrollContainer
         shouldScrollState={shouldScrollState}
         // technical debt (not actually responsive)...
@@ -61,7 +61,7 @@ const ReadBook: NextPage<Props> = ({ chapter, book }) => {
           </div>
         </div>
       </ScrollContainer>
-      <div className="w-full mt-4 md:mt-8">
+      <div className="relative w-full mt-4 md:mt-8  ">
         <AudioPlayer
           color={book.accentColor ?? "#E9D8A6"}
           currentChapter={chapter}

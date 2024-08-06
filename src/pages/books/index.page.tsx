@@ -10,7 +10,7 @@ type Props = PropsWithConfig<GetBooksPayload>;
 
 const Library: NextPage<Props> = ({ books }) => {
   return (
-    <ScrollContainer className="h-full relative" blinderHeight={128}>
+    <ScrollContainer className="h-full relative py-4" blinderHeight={128}>
       <div className="flex flex-col gap-4 md:gap-8">
         <h1 className="md:text-lg text-primary font-primary">Immersive Books</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -8,7 +8,7 @@ type Props = PropsWithConfig<GetBookPayload>;
 
 const BookPreview: NextPage<Props> = ({ book }) => {
   return (
-    <ScrollContainer className="h-full relative" blinderHeight={128}>
+    <ScrollContainer className="h-full relative py-4" blinderHeight={128}>
       <div className="relative flex flex-col gap-8">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -18,10 +18,8 @@ const BookPreview: NextPage<Props> = ({ book }) => {
         />
         <div className="flex flex-col gap-2 items-center mx-auto">
           <h1 className="sm:text-lg text-center font-bold text-primary font-primary">{book.title}</h1>
-          <span className="text-sm sm:text-base text-secondary font-secondary">{book.author}</span>
-          <p className="text-sm sm:text-base text-secondary font-secondary leading-6 sm:leading-8">
-            {book.description}
-          </p>
+          <span className="text-secondary font-secondary">{book.author}</span>
+          <p className="text-secondary font-secondary leading-6 sm:leading-8">{book.description}</p>
         </div>
       </div>
     </ScrollContainer>

@@ -27,7 +27,7 @@ export const Layout: React.FC<Props> = ({ seo, layout, children }) => {
       </Head>
       <div className="relative h-full justify-between flex flex-col w-full md:w-[800px] p-8 md:py-8 lg:px-8">
         {layout.header && <LayoutHeader {...layout.header} />}
-        <div className="h-fit overflow-hidden my-4">{children}</div>
+        <div className="h-fit overflow-hidden">{children}</div>
         {layout.nav && <LayoutNavigation {...layout.nav} />}
       </div>
     </main>

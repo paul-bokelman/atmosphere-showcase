@@ -129,7 +129,7 @@ export const AudioPlayer = ({
 
       <div className="w-full grid grid-cols-2 items-center">
         <span className="text-sm md:text-base text-secondary w-[75%] truncate">{currentChapter.name}</span>
-        <div className="flex items-center justify-end w-full md:w-auto gap-4 md:gap-8">
+        <div className="flex items-center justify-end w-full md:w-auto gap-4 md:gap-8 py-[3px]">
           <MoveChapterButton direction="prev" onClick={handlePrev} disabled={prevChapterDisabled} />
           <PlayPauseButton
             color={color}

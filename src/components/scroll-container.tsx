@@ -18,9 +18,12 @@ export const ScrollContainer: React.FC<Props> = ({
   const [showTop, setShowTop] = React.useState<boolean>(false);
   const [showBottom, setShowBottom] = React.useState<boolean>(false);
 
+  const hideDistancePadding = 12;
+
   const handleBlinderState = (y: number, maxHeight: number) => {
-    setShowTop(y > 0);
-    setShowBottom(y < maxHeight);
+    console.log(y, maxHeight);
+    setShowTop(y - hideDistancePadding > 0);
+    setShowBottom(y < maxHeight - hideDistancePadding);
   };
 
   React.useEffect(() => {
